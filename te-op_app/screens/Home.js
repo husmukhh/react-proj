@@ -1,33 +1,62 @@
 import React from 'react';
-import { StyleSheet, Dimensions, ScrollView } from 'react-native';
+import { StyleSheet, Dimensions, ScrollView ,Text} from 'react-native';
 import { Block, theme } from 'galio-framework';
 
 import { Card } from '../components';
-import articles from '../constants/articles';
+import articles from '../constants/utils';
 const { width } = Dimensions.get('screen');
 
 class Home extends React.Component {
-  renderArticles = () => {
+
+
+
+  constructor() {
+    super();
+    this.state = {
+      data: null,
+      loading: true,
+
+    };
+  }
+
+  renderCourses = () => {
+    fetch('https://127.0.0.1:8080/courses/', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        "searchText":"Bio",
+        "pageNo":1,
+        "country" : "Canada",
+        "pageSize": 10
+      }),
+    }).then(response => response.json())
+    .then(responseJson => {
+      return responseJson.courseList;
+    })
+    .catch(error => {
+      console.error(error);
+    });;
+
+
     return (
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.articles}>
+
         <Block flex>
-          <Card item={articles[0]} horizontal  />
-          <Block flex row>
-            <Card item={articles[1]} style={{ marginRight: theme.SIZES.BASE }} />
-            <Card item={articles[2]} />
-          </Block>
-          <Card item={articles[3]} horizontal />
-          <Card item={articles[4]} full />
+          <Text > Hello </Text>
         </Block>
+
     </ScrollView> );
   }
 
   render() {
     return (
       <Block flex center style={styles.home}>
-        {this.renderArticles()}
+        {this.renderCourses()}
       </Block>
     );
   }
